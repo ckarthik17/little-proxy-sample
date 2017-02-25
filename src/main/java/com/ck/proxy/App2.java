@@ -3,51 +3,25 @@ package com.ck.proxy;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import org.littleshoot.proxy.*;
+import lombok.extern.slf4j.Slf4j;
+import org.littleshoot.proxy.HttpFilters;
+import org.littleshoot.proxy.HttpFiltersAdapter;
+import org.littleshoot.proxy.HttpFiltersSource;
+import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.util.Queue;
-
-public class App {
-  private static int PORT = 9080;
-  private static Logger log;
+@Slf4j
+public class App2 {
+  private static int PORT = 9081;
 
   public static void main(String[] args) {
     System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
-    log = LoggerFactory.getLogger(App.class);
 
     DefaultHttpProxyServer.bootstrap()
       .withPort(PORT)
       .withAllowLocalOnly(false)
       .withFiltersSource(getFiltersSource())
-      .withChainProxyManager(getChainedProxyManager())
-      .withTransparent(true)
       .start();
-  }
-
-  private static ChainedProxyManager getChainedProxyManager() {
-
-    final ChainedProxyAdapter adapter = new ChainedProxyAdapter() {
-      public InetSocketAddress getChainedProxyAddress() {
-        return new InetSocketAddress("127.0.0.1", 9081);
-      }
-    };
-
-    final ChainedProxyAdapter adapter2 = new ChainedProxyAdapter() {
-      public InetSocketAddress getChainedProxyAddress() {
-        return new InetSocketAddress("127.0.0.1", 9082);
-      }
-    };
-
-    return new ChainedProxyManager() {
-      public void lookupChainedProxies(HttpRequest httpRequest, Queue<ChainedProxy> chainedProxies) {
-        chainedProxies.add(adapter);
-        chainedProxies.add(adapter2);
-      }
-    };
   }
 
   private static HttpFiltersSource getFiltersSource() {
