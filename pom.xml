@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ck.proxy</groupId>
-    <artifactId>little-proxy</artifactId>
+    <artifactId>little-proxy-sample</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
